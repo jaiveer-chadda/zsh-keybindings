@@ -20,19 +20,33 @@ function keys() {
     binding="${(*)${line#\"}/%(#b)([^\\])(#B)\" */$match[1]}"
     command="${line#\"$binding\" }"
 
+    # `self-insert` basically means do nothing, so they're irrelevant
     if [[ "$command" == 'self-insert' ]] continue
 
+    binding="${binding// /␣}"
     binding="${binding//'^'\[/⎋ }"
     binding="${binding//'^'/⌃}"
+
+    binding="${binding//OA/↑}"   # up
+    binding="${binding//OB/↓}"   # down
+    binding="${binding//OC/→}"   # right
+    binding="${binding//OD/←}"   # left
+    binding="${binding//OF/↘}"   # end
+    binding="${binding//OH/↖}"   # home
+    binding="${binding//\[5~/⇞}" # pg up
+    binding="${binding//\[6~/⇟}" # pg down
+
+    binding="${(*)binding//\\(#b)([^\\])(#B)/$match[1]}"
 
     bindings[$binding]="$command"
   }
 
-  local bind; local -i 10 max_len=-1
-  for bind ("${(@k)bindings}") if (( $#bind > max_len )) max_len=${#bind}
+  local cmd; local -i 10 max_len=-1
+  for cmd ("${(@v)bindings}") if (( $#cmd > max_len )) max_len=${#cmd}
 
   for bind in "${(@ko)bindings}"; {
-    echo "${(r:$max_len:)bind}  $bindings[$bind]"
+    cmd="$bindings[$bind]"
+    echo "${(r:$max_len:)cmd}  $bind"
   }
 
 }
