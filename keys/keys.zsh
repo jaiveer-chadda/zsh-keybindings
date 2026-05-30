@@ -25,6 +25,11 @@ bindkey '^[[1;5D'   backward-word
 bindkey '^[[3;5~'   kill-word
 bindkey '^[w'       kill-region
 
+# —— Undo/Redo —————————————————————————————————————————————————————————————— #
+
+bindkey '^_'        undo  # mapped to `⌘  Z`
+bindkey '^[^[^?'    redo  # mapped to `⌘⇧ Z`
+
 # —— Completion ————————————————————————————————————————————————————————————— #
 
 bindkey '^[[Z'      reverse-menu-complete
