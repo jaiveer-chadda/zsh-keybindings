@@ -3,7 +3,10 @@
 function keys() {
   setopt local_options warn_create_global
 
-  local -r esc_key=$'\e[31m⎋\e[m'
+  local -r  rst=$'\e[m'
+  local -r  red=$'\e[31m'
+  local -r blue=$'\e[94m'
+  local -r yellow=$'\e[33m'
 
   local -r NL=$'\n'
   local -ra input_lines=(
@@ -25,18 +28,18 @@ function keys() {
     # `self-insert` basically means do nothing, so they're irrelevant
     if [[ "$command" == 'self-insert' ]] continue
 
-    binding="${binding// /␣}"
-    binding="${binding//'^'\[/$esc_key }"
-    binding="${binding//'^'/⌃}"
+    binding="${binding// /$blue␣$rst}"
+    binding="${binding//'^'\[/$red⎋$rst }"
+    binding="${binding//'^'/$yellow⌃$rst}"
 
-    binding="${binding//OA/↑}"   # up
-    binding="${binding//OB/↓}"   # down
-    binding="${binding//OC/→}"   # right
-    binding="${binding//OD/←}"   # left
-    binding="${binding//OF/↘}"   # end
-    binding="${binding//OH/↖}"   # home
-    binding="${binding//\[5~/⇞}" # pg up
-    binding="${binding//\[6~/⇟}" # pg down
+    binding="${binding//OA/$blue↑$rst}"   # up
+    binding="${binding//OB/$blue↓$rst}"   # down
+    binding="${binding//OC/$blue→$rst}"   # right
+    binding="${binding//OD/$blue←$rst}"   # left
+    binding="${binding//OF/$blue↘$rst}"   # end
+    binding="${binding//OH/$blue↖$rst}"   # home
+    binding="${binding//\[5~/$blue⇞$rst}" # pg up
+    binding="${binding//\[6~/$blue⇟$rst}" # pg down
 
     binding="${(*)binding//\\(#b)([^\\])(#B)/$match[1]}"
 
