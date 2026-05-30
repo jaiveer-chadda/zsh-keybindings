@@ -3,6 +3,8 @@
 function keys() {
   setopt local_options warn_create_global
 
+  local -r esc_key=$'\e[31m⎋\e[m'
+
   local -r NL=$'\n'
   local -ra input_lines=(
     "${(@f*)$( bindkey -L )//($NL|(#s))bindkey (-? |)/$NL}"
@@ -24,7 +26,7 @@ function keys() {
     if [[ "$command" == 'self-insert' ]] continue
 
     binding="${binding// /␣}"
-    binding="${binding//'^'\[/⎋ }"
+    binding="${binding//'^'\[/$esc_key }"
     binding="${binding//'^'/⌃}"
 
     binding="${binding//OA/↑}"   # up
@@ -41,7 +43,7 @@ function keys() {
     bindings[$binding]="$command"
   }
 
-  local cmd; local -i 10 max_len=-1
+  local cmd bind; local -i 10 max_len=-1
   for cmd ("${(@v)bindings}") if (( $#cmd > max_len )) max_len=${#cmd}
 
   for bind in "${(@ko)bindings}"; {
