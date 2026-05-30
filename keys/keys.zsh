@@ -20,10 +20,16 @@ bindkey '^[[6~'     down-line-or-history    # ⇟
 bindkey '^[[1;5C'    forward-word
 bindkey '^[[1;5D'   backward-word
 
+# —— Editing ———————————————————————————————————————————————————————————————— #
+
+bindkey '^@'        set-mark-command  # mapped to `⌃ ⇥`
+bindkey '^[m'       copy-prev-shell-word
+
 # —— Deleting ——————————————————————————————————————————————————————————————— #
 
 bindkey '^[[3;5~'   kill-word
 bindkey '^[w'       kill-region
+bindkey '^[^?'      kill-region
 bindkey '^U'        kill-whole-line     # mapped to `⌘ ⌥ ⌫`
 bindkey '^[^U'      backward-kill-line  # mapped to `⌘   ⌫`
 
@@ -35,10 +41,6 @@ bindkey '^[^[^?'    redo  # mapped to `⌘ ⇧ Z`
 # —— Completion ————————————————————————————————————————————————————————————— #
 
 bindkey '^[[Z'      reverse-menu-complete
-
-# —— Editing ———————————————————————————————————————————————————————————————— #
-
-bindkey '^[m'       copy-prev-shell-word
 
 # —— Macros ————————————————————————————————————————————————————————————————— #
 
