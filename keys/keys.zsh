@@ -9,11 +9,11 @@ bindkey ' '         magic-space
 
 bindkey '^[[A'        up-line-or-search     # ↑
 bindkey '^[[B'      down-line-or-search     # ↓
-bindkey '^[OA'        up-line-or-search     # ⎋ ↑
-bindkey '^[OB'      down-line-or-search     # ⎋ ↓
+bindkey '^[OA'        up-line-or-history    # ⎋ ↑
+bindkey '^[OB'      down-line-or-history    # ⎋ ↓
 
-bindkey '^[[5~'       up-line-or-history    # ⇞
-bindkey '^[[6~'     down-line-or-history    # ⇟
+bindkey '^[[5~'     history-beginning-search-backward  # ⇞
+bindkey '^[[6~'     history-beginning-search-forward   # ⇟
 
 # —— Left/Right Navigation —————————————————————————————————————————————————— #
 
@@ -22,6 +22,7 @@ bindkey '^[[1;5D'   backward-word
 
 # —— Editing ———————————————————————————————————————————————————————————————— #
 
+bindkey '^X^O'      overwrite-mode    # mapped to `⌥ o`
 bindkey '^@'        set-mark-command  # mapped to `⌃ ⇥`
 bindkey '^[m'       copy-prev-shell-word
 
