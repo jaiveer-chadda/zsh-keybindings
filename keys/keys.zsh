@@ -7,10 +7,14 @@ bindkey ' '         magic-space
 
 # —— Up/Down Navigation ————————————————————————————————————————————————————— #
 
-bindkey '^[[A'        up-line-or-search     # ↑
-bindkey '^[[B'      down-line-or-search     # ↓
-bindkey '^[OA'        up-line-or-history    # ⎋ ↑
-bindkey '^[OB'      down-line-or-history    # ⎋ ↓
+autoload -Uz          up-line-or-beginning-search
+autoload -Uz        down-line-or-beginning-search
+
+bindkey '^[[A'        up-line-or-beginning-search      # ↑
+bindkey '^[[B'      down-line-or-beginning-search      # ↓
+
+bindkey '^[OA'        up-line-or-history               # ⎋ ↑
+bindkey '^[OB'      down-line-or-history               # ⎋ ↓
 
 bindkey '^[[5~'     history-beginning-search-backward  # ⇞
 bindkey '^[[6~'     history-beginning-search-forward   # ⇟
