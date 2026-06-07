@@ -17,8 +17,8 @@ bindkey '^[[B'    down-line-or-beginning-search      # ↓
 
 # ————————————————————————————————————————————— #
 
-bindkey '^[OA'      up-line-or-history               # ⎋ ↑
-bindkey '^[OB'    down-line-or-history               # ⎋ ↓
+bindkey '^[OA'      up-line-or-history               # ⎋ O ↑
+bindkey '^[OB'    down-line-or-history               # ⎋ O ↓
 
 bindkey '^[[5~'   history-beginning-search-backward  # ⇞
 bindkey '^[[6~'   history-beginning-search-forward   # ⇟
@@ -52,6 +52,9 @@ bindkey '^[^[^?'  redo  # mapped to `⌘ ⇧ Z`
 bindkey '^[[Z'    reverse-menu-complete
 
 # —— Macros ————————————————————————————————————————————————————————————————— #
+
+zle -N r
+bindkey -s '^[r'  '^Qr^J'
 
 zle -N lsjv
 bindkey -s '^[l'  '^Qcl^J'
