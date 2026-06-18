@@ -39,8 +39,8 @@ bindkey '^[m'     copy-prev-shell-word
 bindkey '^[[3;5~' kill-word
 bindkey '^[w'     kill-region
 bindkey '^[^?'    kill-region
-bindkey '^U'      kill-whole-line     # mapped to `⌘ ⌥ ⌫`
-bindkey '^[^U'    backward-kill-line  # mapped to `⌘   ⌫`
+bindkey '^U'      backward-kill-line  # mapped to `⌘   ⌫`
+bindkey '^[^U'    kill-whole-line     # mapped to `⌘ ⌥ ⌫`
 
 # —— Undo/Redo —————————————————————————————————————————————————————————————— #
 
