@@ -2,7 +2,7 @@
 
 # —— Helper Functions ——————————————————————————————————————————————————————— #
 
-function _set_mark() { if (( !REGION_ACTIVE )) { zle set-mark-command; }; }
+function _set_mark() { if ! (( REGION_ACTIVE )) zle set-mark-command; }
 
 # —— Select Left/Right —————————————————————————————————————————————————————— #
 
@@ -25,10 +25,25 @@ bindkey '^[[1;4C' select-right-word  # ⌥ ⇧ ->
 function cancel-region-left  () { REGION_ACTIVE=0; zle backward-char; }
 function cancel-region-right () { REGION_ACTIVE=0; zle forward-char ; }
 
-zle -N  cancel-region-left; zle -N cancel-region-right
+zle -N cancel-region-left; zle -N cancel-region-right
 
 bindkey '^[^[[D' cancel-region-left   # ⎋ <-
 bindkey '^[^[[C' cancel-region-right  # ⎋ ->
+
+# —— Copy Region ———————————————————————————————————————————————————————————— #
+
+function copy-region () {
+  if ! (( REGION_ACTIVE )) return
+
+  if (( CURSOR < MARK  )) { left=$CURSOR right=$MARK; } \
+  else                    { left=$MARK right=$CURSOR; }
+
+  echo -nE "$BUFFER[left+1,right]" | pbcopy
+  REGION_ACTIVE=0
+}
+
+zle -N          copy-region
+bindkey '^[].c' copy-region  # ⌘ ⌥ C
 
 # —— Delete Region —————————————————————————————————————————————————————————— #
 
@@ -49,21 +64,17 @@ bindkey '^?' delete-region-or-char  # ⌫
 
 function quote-region-or-insert () {
   local -r quote="$KEYS[-1]"
+  if ! (( REGION_ACTIVE )) { zle self-insert "$quote"; return; }
 
-  if (( REGION_ACTIVE )) {
-    local -i 10 left right
+  local -i 10 left right
 
-    if (( CURSOR < MARK )) { left=$CURSOR right=$MARK; } \
-    else                   { left=$MARK right=$CURSOR; }
+  if (( CURSOR < MARK )) { left=$CURSOR right=$MARK; } \
+  else                   { left=$MARK right=$CURSOR; }
 
-    BUFFER="$BUFFER[1,left]$quote$BUFFER[left+1,right]$quote$BUFFER[right+1,-1]"
-    CURSOR=$right+1
+  BUFFER="$BUFFER[1,left]$quote$BUFFER[left+1,right]$quote$BUFFER[right+1,-1]"
+  CURSOR=$right+1
 
-    REGION_ACTIVE=0
-
-  } else {
-    zle self-insert "$quote"
-  }
+  REGION_ACTIVE=0
 }
 
 zle -N     quote-region-or-insert
