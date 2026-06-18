@@ -37,15 +37,17 @@ bindkey '^[m'     copy-prev-shell-word
 # —— Deleting ——————————————————————————————————————————————————————————————— #
 
 bindkey '^[[3;5~' kill-word
+
 bindkey '^[w'     kill-region
 bindkey '^[^?'    kill-region
+
 bindkey '^U'      backward-kill-line  # mapped to `⌘   ⌫`
 bindkey '^[^U'    kill-whole-line     # mapped to `⌘ ⌥ ⌫`
 
 # —— Undo/Redo —————————————————————————————————————————————————————————————— #
 
 bindkey '^_'      undo  # mapped to `⌘   Z`
-bindkey '^[^[^?'  redo  # mapped to `⌘ ⇧ Z`
+bindkey '^[[^_'   redo  # mapped to `⌘ ⇧ Z`
 
 # —— Completion ————————————————————————————————————————————————————————————— #
 
@@ -60,5 +62,7 @@ zle -N lsjv
 bindkey -s '^[l'  '^Qcl^J'
 
 # —— Other —————————————————————————————————————————————————————————————————— #
+
+() { local src; for src in "${${(%):-%x}:a:h:h}/custom/"*.zsh; source "$src"; }
 
 # ——————————————————————————————————————————————————————————————————————————— #
