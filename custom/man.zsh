@@ -22,4 +22,3 @@ function zle-run-man () {
 
 zle -N        zle-run-man
 bindkey '^[h' zle-run-man
-bindkey '^[H' zle-run-man
