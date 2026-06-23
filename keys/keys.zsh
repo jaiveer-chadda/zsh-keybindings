@@ -65,6 +65,6 @@ bindkey -s '^[l'  '^Qcl^J'
 
 bindkey '^X^A'    _expand_alias
 
-() { local src; for src in "${${(%):-%x}:a:h:h}/custom/"*.zsh; source "$src"; }
+() { local src; for src ("${${(%):-%x}:a:h:h}/custom/"**/*.zsh) source "$src"; }
 
 # ——————————————————————————————————————————————————————————————————————————— #
