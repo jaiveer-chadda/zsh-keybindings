@@ -40,8 +40,8 @@ bindkey '^[^[[C' cancel-region-right  # ⎋ ->
 function copy-region () {
   if ! (( REGION_ACTIVE )) return
 
-  if (( CURSOR < MARK  )) { left=$CURSOR right=$MARK; } \
-  else                    { left=$MARK right=$CURSOR; }
+  if (( CURSOR < MARK )) { left=$CURSOR right=$MARK; } \
+  else                   { left=$MARK right=$CURSOR; }
 
   echo -nE "$BUFFER[left+1,right]" | pbcopy
   REGION_ACTIVE=0
@@ -49,6 +49,22 @@ function copy-region () {
 
 zle -N          copy-region
 bindkey '^[].c' copy-region  # ⌘ ⌥ C
+
+# —— Cut Region ————————————————————————————————————————————————————————————— #
+
+function cut-region () {
+  if ! (( REGION_ACTIVE )) return
+
+  if (( CURSOR < MARK )) { left=$CURSOR right=$MARK; } \
+  else                   { left=$MARK right=$CURSOR; }
+
+  echo -nE "$BUFFER[left+1,right]" | pbcopy
+  zle kill-region
+  REGION_ACTIVE=0
+}
+
+zle -N          cut-region
+bindkey '^[].x' cut-region  # ⌘ X
 
 # —— Delete Region —————————————————————————————————————————————————————————— #
 
