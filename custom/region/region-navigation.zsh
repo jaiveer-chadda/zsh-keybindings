@@ -2,53 +2,31 @@
 
 # —— Helper Functions ——————————————————————————————————————————————————————— #
 
-function _set_mark() { if ! (( REGION_ACTIVE )) zle set-mark-command; }
+function _mk_region_func() {
+  local -r type="$1" scope="$2" LFunc="$3" RFunc="$4"
+  # if `$6` is unset, substitute `${5}D` / `${5}C` for the left / right keys
+  # if `$6` is set,   substitute  `$5`   /  `$6`   for the left / right keys
+  local -r LKey="$5${${6:-D}/#%$6}" RKey="${6:-${5}C}"
 
-# —— Select Left/Right —————————————————————————————————————————————————————— #
+  local setup=
+  [[ "$type" == cancel ]] && setup='REGION_ACTIVE=0' \
+    || setup='if ! (( REGION_ACTIVE )) { zle set-mark-command; }'
 
-function select-char-left  () { _set_mark; zle     backward-char; }
-function select-char-right () { _set_mark; zle      forward-char; }
+  eval "function -- '$type-$scope-left'  () { $setup; zle '$LFunc-$scope'; }"
+  eval "function -- '$type-$scope-right' () { $setup; zle '$RFunc-$scope'; }"
 
-function select-word-left  () { _set_mark; zle     backward-word; }
-function select-word-right () { _set_mark; zle      forward-word; }
+  zle -N "$type-$scope-left" ; bindkey "^[$LKey" "$type-$scope-left"
+  zle -N "$type-$scope-right"; bindkey "^[$RKey" "$type-$scope-right"
+}
 
-function select-line-left  () { _set_mark; zle beginning-of-line; }
-function select-line-right () { _set_mark; zle       end-of-line; }
+# —— Select & Cancel Region ————————————————————————————————————————————————— #
 
-zle -N select-char-left ; zle -N select-word-left ; zle -N select-line-left
-zle -N select-char-right; zle -N select-word-right; zle -N select-line-right
+_mk_region_func select  char  backward      forward  '[1;2'      #    ⇧ ←/→
+_mk_region_func select  word  backward      forward  '[1;4'      #  ⌥ ⇧ ←/→
+_mk_region_func select  line  beginning-of  end-of   '[jC;S'     #  ⌘ ⇧ ←/→
 
-bindkey '^[[1;2D'  select-char-left   #   ⇧ <-
-bindkey '^[[1;2C'  select-char-right  #   ⇧ ->
-
-bindkey '^[[1;4D'  select-word-left   # ⌥ ⇧ <-
-bindkey '^[[1;4C'  select-word-right  # ⌥ ⇧ ->
-
-bindkey '^[[jC;SD' select-line-left   # ⌘ ⇧ <-
-bindkey '^[[jC;SC' select-line-right  # ⌘ ⇧ ->
-
-# —— Cancel Region —————————————————————————————————————————————————————————— #
-
-function cancel-char-left  () { REGION_ACTIVE=0; zle     backward-char; }
-function cancel-char-right () { REGION_ACTIVE=0; zle      forward-char; }
-
-function cancel-word-left  () { REGION_ACTIVE=0; zle     backward-word; }
-function cancel-word-right () { REGION_ACTIVE=0; zle      forward-word; }
-
-function cancel-line-left  () { REGION_ACTIVE=0; zle beginning-of-line; }
-function cancel-line-right () { REGION_ACTIVE=0; zle       end-of-line; }
-
-zle -N cancel-char-left; zle -N cancel-char-right
-zle -N cancel-word-left; zle -N cancel-word-right
-zle -N cancel-line-left; zle -N cancel-line-right
-
-bindkey '^[^[[D' cancel-char-left   # ⎋,   <-
-bindkey '^[^[[C' cancel-char-right  # ⎋,   ->
-
-bindkey '^[^[b'  cancel-word-left   # ⎋, ⌥ <-
-bindkey '^[^[f'  cancel-word-right  # ⎋, ⌥ ->
-
-bindkey '^[^A'   cancel-line-left   # ⎋, ⌘ <-
-bindkey '^[^E'   cancel-line-right  # ⎋, ⌘ ->
+_mk_region_func cancel  char  backward      forward  '^[['       # ⎋,   ←/→
+_mk_region_func cancel  word  backward      forward  '^[b' '^[f' # ⎋, ⌥ ←/→
+_mk_region_func cancel  line  beginning-of  end-of   '^A'  '^E'  # ⎋, ⌘ ←/→
 
 # ——————————————————————————————————————————————————————————————————————————— #
