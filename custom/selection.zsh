@@ -6,24 +6,29 @@ function _set_mark() { if ! (( REGION_ACTIVE )) zle set-mark-command; }
 
 # —— Select Left/Right —————————————————————————————————————————————————————— #
 
-function select-left-char  () { _set_mark; zle backward-char ; }
-function select-right-char () { _set_mark; zle forward-char  ; }
-function select-left-word  () { _set_mark; zle backward-word ; }
-function select-right-word () { _set_mark; zle forward-word  ; }
+function select-left-char  () { _set_mark; zle     backward-char; }
+function select-right-char () { _set_mark; zle      forward-char; }
+function select-left-word  () { _set_mark; zle     backward-word; }
+function select-right-word () { _set_mark; zle      forward-word; }
+function select-left-line  () { _set_mark; zle beginning-of-line; }
+function select-right-line () { _set_mark; zle       end-of-line; }
 
-zle -N select-left-char; zle -N select-right-char
-zle -N select-left-word; zle -N select-right-word
+zle -N select-left-char ; zle -N select-left-word ; zle -N select-left-line
+zle -N select-right-char; zle -N select-right-word; zle -N select-right-line
 
-bindkey '^[[1;2D' select-left-char   #   ⇧ <-
-bindkey '^[[1;2C' select-right-char  #   ⇧ ->
+bindkey '^[[1;2D'  select-left-char   #   ⇧ <-
+bindkey '^[[1;2C'  select-right-char  #   ⇧ ->
 
-bindkey '^[[1;4D' select-left-word   # ⌥ ⇧ <-
-bindkey '^[[1;4C' select-right-word  # ⌥ ⇧ ->
+bindkey '^[[1;4D'  select-left-word   # ⌥ ⇧ <-
+bindkey '^[[1;4C'  select-right-word  # ⌥ ⇧ ->
+
+bindkey '^[[jC;SD' select-left-line   # ⌘ ⇧ <-  [j = jv, C=⌘, S=⇧, D/C = ←/→]
+bindkey '^[[jC;SC' select-right-line  # ⌘ ⇧ ->
 
 # —— Cancel Region —————————————————————————————————————————————————————————— #
 
 function cancel-region-left  () { REGION_ACTIVE=0; zle backward-char; }
-function cancel-region-right () { REGION_ACTIVE=0; zle forward-char ; }
+function cancel-region-right () { REGION_ACTIVE=0; zle  forward-char; }
 
 zle -N cancel-region-left; zle -N cancel-region-right
 
