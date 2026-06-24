@@ -62,7 +62,10 @@ zle -N lsjv
 bindkey -s '^[l'  '^Qcl^J'
 
 zle -N keys
-bindkey -s '^[k'  '^Qkeys^J'
+bindkey -s '^[k'  '^Qkeys | less^J'
+
+zle -N clr_ln
+bindkey -s '^[e'  '^Qe^J'
 
 # —— Other —————————————————————————————————————————————————————————————————— #
 
