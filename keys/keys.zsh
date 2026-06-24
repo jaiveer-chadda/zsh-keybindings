@@ -61,6 +61,9 @@ bindkey -s '^[r'  '^Qr^J'
 zle -N lsjv
 bindkey -s '^[l'  '^Qcl^J'
 
+zle -N keys
+bindkey -s '^[k'  '^Qkeys^J'
+
 # —— Other —————————————————————————————————————————————————————————————————— #
 
 bindkey '^X^A'    _expand_alias
@@ -68,3 +71,5 @@ bindkey '^X^A'    _expand_alias
 () { local fl; for fl ("${${(%):-%x}:a:h:h}/custom/"**/*.zsh) source "$fl"; }
 
 # ——————————————————————————————————————————————————————————————————————————— #
+
+# spell:ignoreRegExp /[^][A-Z]\w+/g

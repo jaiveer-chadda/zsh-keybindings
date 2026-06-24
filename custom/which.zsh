@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 function zle-run-wh () {
-  if (( ${#BUFFER//[[:space:]]} == 0 )) { zle beep; return; }
+  if ! (( ${#BUFFER//[[:space:]]} )) { zle beep; return; }
 
   local entry=
 
