@@ -48,23 +48,34 @@ bindkey '^?' delete-region-or-char  # ⌫
 
 # —— Quote Region ——————————————————————————————————————————————————————————— #
 
-function quote-region-or-insert () {
-  local -r quote="$KEYS[-1]"
-  if ! (( REGION_ACTIVE )) { zle self-insert "$quote"; return; }
+function surround-region-or-insert () {
+  if ! (( REGION_ACTIVE )) { zle self-insert "$KEYS[-1]"; return; }
+
+  local -r lChar="$KEYS[-1]"
+  case "$lChar" { #
+    ( '(' ) rChar=')'      ;;
+    ( '[' ) rChar=']'      ;;
+    ( '{' ) rChar='}'      ;;
+    ( '<' ) rChar='>'      ;;
+    (  *  ) rChar="$lChar" ;;
+  }
 
   local -i 10 left right
-
   if (( CURSOR < MARK )) { left=$CURSOR right=$MARK; } \
   else                   { left=$MARK right=$CURSOR; }
 
-  BUFFER="$BUFFER[1,left]$quote$BUFFER[left+1,right]$quote$BUFFER[right+1,-1]"
+  BUFFER="$BUFFER[1,left]$lChar$BUFFER[left+1,right]$rChar$BUFFER[right+1,-1]"
   CURSOR=$right+1
-
   REGION_ACTIVE=0
 }
 
-zle -N     quote-region-or-insert
-bindkey \' quote-region-or-insert  # '
-bindkey \" quote-region-or-insert  # "
+zle -N surround-region-or-insert
+
+() {
+  local char
+  for char in "${(@s::):-"\"'()[]{}<>"}"; {
+    bindkey -- "$char" surround-region-or-insert
+  }
+}
 
 # ——————————————————————————————————————————————————————————————————————————— #
