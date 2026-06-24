@@ -13,7 +13,8 @@ function zle-run-wh () {
     entry="${(*)${(*)BUFFER[left+1,right]/#[[:space:]]##}/%[[:space:]]##}"
 
   } else {
-    entry="${${(@z)BUFFER}[1]}"
+    local -ra buffer=( "${(@z)BUFFER}" )
+    entry="$buffer[1]"
   }
 
   # go down one line so we don't overwrite the command line text
