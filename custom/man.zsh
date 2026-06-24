@@ -1,6 +1,8 @@
 #!/usr/bin/env zsh
 
 function zle-run-man () {
+  if ! (( ${#BUFFER//[[:space:]]} )) { zle beep; return; }
+
   local entry=
 
   if (( REGION_ACTIVE )) {
