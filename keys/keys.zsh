@@ -71,7 +71,7 @@ bindkey -s '^[e'  '^Qe^J'
 
 bindkey '^X^A'    _expand_alias
 
-() { local fl; for fl ("${${(%):-%x}:a:h:h}/custom/"**/*.zsh) source "$fl"; }
+() { local f; for f ("${${(%):-%x}:a:h:h}/custom/"**/*.zsh) source "$f"; }
 
 # ——————————————————————————————————————————————————————————————————————————— #
 
