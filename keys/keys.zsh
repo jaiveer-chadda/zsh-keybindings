@@ -7,15 +7,7 @@ bindkey    ' '    magic-space
 
 # —— Up/Down Navigation ————————————————————————————————————————————————————— #
 
-autoload -Uz {up,down}-line-or-beginning-search
-
-zle -N              up-line-or-beginning-search
-zle -N            down-line-or-beginning-search
-
-bindkey '^[[A'      up-line-or-beginning-search      # ↑
-bindkey '^[[B'    down-line-or-beginning-search      # ↓
-
-# ————————————————————————————————————————————— #
+# note: these functions are secondary - the main funcs are in `navigation.zsh`
 
 bindkey '^[OA'      up-line-or-history               # ⎋ O ↑
 bindkey '^[OB'    down-line-or-history               # ⎋ O ↓
