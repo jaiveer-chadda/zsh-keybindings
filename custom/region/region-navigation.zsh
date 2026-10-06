@@ -22,7 +22,7 @@ function _mk_region_func() {
 # —— Select & Cancel Region ————————————————————————————————————————————————— #
 
 _mk_region_func select  char  backward      forward  '[1;2'      #    ⇧ ←/→
-_mk_region_func select  word  backward      forward  '[1;4'      #  ⌥ ⇧ ←/→
+_mk_region_func select  word  backward      forward  '[1;10'     #  ⌥ ⇧ ←/→
 _mk_region_func select  line  beginning-of  end-of   '[jC;S'     #  ⌘ ⇧ ←/→
 
 _mk_region_func cancel  char  backward      forward  '^[['       # ⎋,   ←/→
