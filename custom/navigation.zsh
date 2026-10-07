@@ -19,9 +19,10 @@ function zle-up-line () {
   local -i 10 column prev_col char_count width
 
   # visual column of the cursor (a tab advances to the next tab stop)
-  for char in "${(@s::)cur_line}"; {
+  # note: this expansion has to be left unquoted - it doesn't work otherwise
+  for char in ${(s::)cur_line}; {
     if [[ $char == $'\t' ]] {
-      (( column += TABSIZE - column % TABSIZE ))
+      (( column += TABSIZE - ( column % TABSIZE ) ))
 
     } else {
       (( column++ ))
@@ -29,7 +30,7 @@ function zle-up-line () {
   }
 
   # walk the previous line until we reach that column (or run out of line)
-  for char in "${(@s::)prev_line}"; {
+  for char in ${(s::)prev_line}; {
     if [[ $char == $'\t' ]] {
       (( width = TABSIZE - prev_col % TABSIZE ))
     } else {
@@ -41,7 +42,9 @@ function zle-up-line () {
   }
 
   # start offset of the previous line + number of chars we stepped over
-  (( CURSOR = ${#before} - ${#prev_line} + char_count ))
+  (( CURSOR = $#before - $#prev_line + char_count ))
+
+  return 0
 }
 
 # ——————————————————————————————————————————————————————————————————————————— #
@@ -63,7 +66,7 @@ function zle-down-line () {
   local -i 10 column next_col char_count width
 
   # visual column of the cursor (a tab advances to the next tab stop)
-  for char in "${(@s::)cur_line}"; {
+  for char in ${(s::)cur_line}; {
     if [[ $char == $'\t' ]] {
       (( column += TABSIZE - column % TABSIZE ))
 
@@ -73,7 +76,7 @@ function zle-down-line () {
   }
 
   # walk the next line until we reach that column (or run out of line)
-  for char in "${(@s::)next_line}"; {
+  for char in ${(s::)next_line}; {
     if [[ $char == $'\t' ]] {
       (( width = TABSIZE - next_col % TABSIZE ))
     } else {
@@ -85,7 +88,9 @@ function zle-down-line () {
   }
 
   # start offset of the next line + number of chars we stepped over
-  (( CURSOR += ${#RBUFFER} - ${#after} + char_count ))
+  (( CURSOR += $#RBUFFER - $#after + char_count ))
+
+  return 0
 }
 
 # ——————————————————————————————————————————————————————————————————————————— #
