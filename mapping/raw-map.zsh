@@ -1,32 +1,14 @@
 #!/usr/bin/env zsh
 
-#              ==  0
-#
-#  ⌘           ==  1
-#     ⌥        ==  2
-#        ⌃     ==  4
-#           ⇧  ==  8
-#
-#  ⌘  ⌥        ==  3
-#  ⌘     ⌃     ==  5
-#     ⌥  ⌃     ==  6
-#  ⌘        ⇧  ==  9
-#     ⌥     ⇧  ==  A
-#        ⌃  ⇧  ==  C
-#
-#  ⌘  ⌥  ⌃     ==  7
-#  ⌘  ⌥     ⇧  ==  B
-#  ⌘     ⌃  ⇧  ==  D
-#     ⌥  ⌃  ⇧  ==  E
-#
-#  ⌘  ⌥  ⌃  ⇧  ==  F  ==  ✦
-
 # ——————————————————————————————————————————————————————————————————————————— #
 
 function raw_key_mapping() {
 
+  # note: the `meta` key isn't included in these - I might add it later tho
   local -ra _modifiers=( '⌘' '⌥' '⌃' '⇧' )
 
+  # any modifier keys, keys that can't be typed in a single character,
+  #  or keys which have some other semantic meaning, are mapped to these chars
   local -rA _keymap=(
     ['A']="'"   ['C']='§'   ['Q']='`'   ['V']='\'   ['{']='['   ['}']=']'
     ['B']='⌫'   ['D']='⌦'   ['R']='⏎'   ['S']='␣'   ['T']='⇥'
