@@ -7,8 +7,8 @@ function count() {
     text="$BUFFER"
 
   } else {
-    if (( CURSOR < MARK )) { left=$CURSOR right=$MARK; } \
-    else                   { left=$MARK right=$CURSOR; }
+    local -i 10 left right
+    (( CURSOR < MARK ? (left=CURSOR, right=MARK) : (left=MARK, right=CURSOR) ))
 
     text="$BUFFER[left+1,right]"
   }

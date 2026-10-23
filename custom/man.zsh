@@ -5,8 +5,7 @@ function zle-run-man () {
 
   if (( REGION_ACTIVE )) {
     local -i 10 left right
-    if (( CURSOR < MARK )) { left=$CURSOR right=$MARK; } \
-    else                   { left=$MARK right=$CURSOR; }
+    (( CURSOR < MARK ? (left=CURSOR, right=MARK) : (left=MARK, right=CURSOR) ))
 
     entry="${(*)${(*)BUFFER[left+1,right]/#[[:space:]]##}/%[[:space:]]##}"
 

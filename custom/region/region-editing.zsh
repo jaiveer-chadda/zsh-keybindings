@@ -5,8 +5,8 @@
 function copy-region () {
   if ! (( REGION_ACTIVE )) return
 
-  if (( CURSOR < MARK )) { left=$CURSOR right=$MARK; } \
-  else                   { left=$MARK right=$CURSOR; }
+  local -i 10 left right
+  (( CURSOR < MARK ? ( left=CURSOR,right=MARK ) : ( left=MARK,right=CURSOR ) ))
 
   echo -nE "$BUFFER[left+1,right]" | pbcopy
   REGION_ACTIVE=0
@@ -20,8 +20,8 @@ bindkey '^[].c' copy-region  # ⌘ ⌥ C
 function cut-region () {
   if ! (( REGION_ACTIVE )) return
 
-  if (( CURSOR < MARK )) { left=$CURSOR right=$MARK; } \
-  else                   { left=$MARK right=$CURSOR; }
+  local -i 10 left right
+  (( CURSOR < MARK ? ( left=CURSOR,right=MARK ) : ( left=MARK,right=CURSOR ) ))
 
   echo -nE "$BUFFER[left+1,right]" | pbcopy
   zle kill-region
@@ -48,30 +48,40 @@ bindkey '^?' delete-region-or-char  # ⌫
 
 # —— Quote Region ——————————————————————————————————————————————————————————— #
 
-function surround-region-or-insert () {
-  if ! (( REGION_ACTIVE )) { zle self-insert "$KEYS[-1]"; return; }
+# note: this function applies to the following chars:  "'()[]{}<>
+# note: for the function to work correctly, the last key of the key sequence
+#        used to call the function has to be the surrounding char
 
-  local -r lChar="$KEYS[-1]"
-  case "$lChar" { #
-    ( '(' ) rChar=')'      ;;
-    ( '[' ) rChar=']'      ;;
-    ( '{' ) rChar='}'      ;;
-    ( '<' ) rChar='>'      ;;
-    (  *  ) rChar="$lChar" ;;
+function surround-region-or-insert () {
+  if ! (( REGION_ACTIVE )) {
+    zle self-insert "$KEYS[-1]";
+    return;
+  }
+
+  local lchr="$KEYS[-1]" rchr
+  case "$lchr" { #
+    ( '(' ) rchr=')' ;; ( ')' ) lchr='(' rchr=')' ;;
+    ( '[' ) rchr=']' ;; ( ']' ) lchr='[' rchr=']' ;;
+    ( '{' ) rchr='}' ;; ( '}' ) lchr='{' rchr='}' ;;
+    ( '<' ) rchr='>' ;; ( '>' ) lchr='<' rchr='>' ;;
+
+    (  *  ) rchr="$lchr" ;;
   }
 
   local -i 10 left right
-  if (( CURSOR < MARK )) { left=$CURSOR right=$MARK; } \
-  else                   { left=$MARK right=$CURSOR; }
+  (( CURSOR < MARK ? ( left=CURSOR,right=MARK ) : ( left=MARK,right=CURSOR ) ))
 
-  BUFFER="$BUFFER[1,left]$lChar$BUFFER[left+1,right]$rChar$BUFFER[right+1,-1]"
+  BUFFER="$BUFFER[1,left]$lchr$BUFFER[left+1,right]$rchr$BUFFER[right+1,-1]"
   CURSOR=$right+1
+
   REGION_ACTIVE=0
 }
 
 zle -N surround-region-or-insert
 
-() {
+# ———————————————————————————— #
+
+function -- () {
   local char
   for char in "${(@s::):-"\"'()[]{}<>"}"; {
     bindkey -- "$char" surround-region-or-insert
@@ -79,3 +89,5 @@ zle -N surround-region-or-insert
 }
 
 # ——————————————————————————————————————————————————————————————————————————— #
+
+# spell:ignoreRegexp /\b[rl]chr\b/g
