@@ -40,18 +40,38 @@ function  transp-chrs  transp-chrs-left  transp-chrs-right  () {
     (( CURSOR < MARK ? ( lcur=CURSOR,rcur=MARK ) : ( lcur=MARK,rcur=CURSOR ) ))
   }
 
-  # —— Construct New Buffer ———————————————————————————————————————————————— #
+  # —— Create Buffer Sections —————————————————————————————————————————————— #
 
   local -r \
     left="$BUFFER[ 1        , lcur ]" \
     midl="$BUFFER[ lcur + 1 , rcur ]" \
     righ="$BUFFER[ rcur + 1 , -1   ]"
 
+  # —— Verify Input ——————————————————————————— #
+
+  # make sure we're not trying to shift off the end of the screen
+  if (( direction == LEFT  && lcur == 0  ||
+        direction == RIGHT && rcur == $#BUFFER
+  )) zle beep && return 0
+
   # ——————————————————————————————————————————— #
+
+  # a selection can't contain a newline, and you can't move into a newline
+  # todo: add an exception for when there's only one character selected
+  if [[ $midl     == *$'\n'*
+     || $left[-1] ==  $'\n' && $direction -eq $LEFT
+     || $righ[+1] ==  $'\n' && $direction -eq $RIGHT
+  ]] zle beep && return 0
+
+  # —— Construct New Buffer ———————————————————————————————————————————————— #
 
   if   (( direction == RIGHT )) { BUFFER="$left$righ[+1]$midl$righ[2,-1]"; } \
   elif (( direction == LEFT  )) { BUFFER="$left[1,-2]$midl$left[-1]$righ"; } \
   else {
+    # todo: implement functionality to make this func behave a bit more like
+    #       the default ⌃T (transpose-chars), where when it gets to the
+    #       beginning or end of a line (note: _line_ not buffer), it
+    #       transposes the chars back and forth, instead of beeping
     zle beep; zle -M 'error: not implemented'
     return 1
   }
@@ -64,8 +84,8 @@ function  transp-chrs  transp-chrs-left  transp-chrs-right  () {
 # ——————————————————————————————————————————————————————————————————————————— #
 
 zle -N transp-chrs       ; bindkey '^T'       transp-chrs
-zle -N transp-chrs-left  ; bindkey '^[[(A+q)' transp-chrs-left
-zle -N transp-chrs-right ; bindkey '^[[(A+w)' transp-chrs-right
+zle -N transp-chrs-left  ; bindkey '^[[(A+q)' transp-chrs-left   # ⌥ q
+zle -N transp-chrs-right ; bindkey '^[[(A+w)' transp-chrs-right  # ⌥ w
 
 # ——————————————————————————————————————————————————————————————————————————— #
 
