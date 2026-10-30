@@ -1,8 +1,9 @@
 #!/usr/bin/env zsh
 
-# ——————————————————————————————————————————————————————————————————————————— #
-
 function zle-line-up zle-line-down () {
+
+  local -r NL=$'\n' HT=$'\t'
+  local -ri 10 TABSIZE=8
 
   # get the last word of the function name
   local -r move="${${(%):-%N}##*-}"
@@ -12,82 +13,66 @@ function zle-line-up zle-line-down () {
   # if we're moving upwards
   if [[ $move == 'up' ]] {
     # and we're on the first line
-    if [[ $LBUFFER != *$'\n'* ]] {
+    if [[ $LBUFFER != *$NL* ]] {
       # then perform the default behaviour for the up arrow
       zle up-line-or-beginning-search
       return
     }
 
   # if we're moving downwards, and we're on the last line
-  } elif [[ $RBUFFER != *$'\n'* ]] {
+  } elif [[ $RBUFFER != *$NL* ]] {
     zle down-line-or-beginning-search # run the function for the down arrow
     return
   }
 
   # ————————————————————————————————————————————————————————————————————————— #
 
-  local -ri 10 TABSIZE=8
-
-  local    before="${LBUFFER%$'\n'*}"   # everything before the current line
-  local     after="${RBUFFER#*$'\n'}"   # everything after the current line
-
-  local prev_line="${before##*$'\n'}"   # the full previous line
-  local next_line="${after%%$'\n'*}"    # the full next line
-
-  local  cur_line="${LBUFFER##*$'\n'}"  # current line, up to the cursor
+  local -r cur_line="${LBUFFER##*$NL}"  # current line, up to the cursor
 
   # ————————————————————————————————————————————————————————————————————————— #
 
   local char
-  local -i 10 column char_count
+  local -i 10 cursor_pos char_count
 
   # visual column of the cursor (a tab advances to the next tab stop)
   # note: this expansion has to be left unquoted - it doesn't work otherwise
   for char in ${(s::)cur_line}; {
-    if [[ $char == $'\t' ]] {
-      (( column += TABSIZE - ( column % TABSIZE ) ))
+    if [[ $char == $HT ]] {
+      (( cursor_pos += TABSIZE - ( cursor_pos % TABSIZE ) ))
 
     } else {
-      (( column++ ))
+      (( cursor_pos++ ))
     }
   }
 
   # ————————————————————————————————————————————————————————————————————————— #
 
-  local -i 10 width next_col prev_col
+  local -r before="${LBUFFER%$NL*}"  # everything before the current line
+  local -r  after="${RBUFFER#*$NL}"  # everything after the current line
 
-  if [[ $move == up ]] {
-    # walk the previous line until we reach that column (or run out of line)
-    for char in ${(s::)prev_line}; {
-      if [[ $char == $'\t' ]] {
-        (( width = TABSIZE - prev_col % TABSIZE ))
-      } else {
-        (( width = 1 ))
-      }
+  local -i 10 width line_col
+  local line=
 
-      (( prev_col +  width > column      )) && break
-      (( prev_col += width, char_count++ ))
+  if [[ $move == up ]] { line="${before##*$NL}" } \
+  else                 { line="${after%%$NL*}"  }
+
+  # walk the previous/next line until we reach the cursor (or run out of line)
+  for char in ${(s::)line}; {
+    if [[ $char == $HT ]] {
+      (( width = TABSIZE - line_col % TABSIZE ))
+    } else {
+      (( width = 1 ))
     }
 
-    # start offset of the previous line + number of chars we stepped over
-    (( CURSOR = $#before - $#prev_line + char_count ))
-
-  } else { # ———————————————————————————————————————————————————————————————— #
-
-    for char in ${(s::)next_line}; {
-      if [[ $char == $'\t' ]] {
-        (( width = TABSIZE - next_col % TABSIZE ))
-      } else {
-        (( width = 1 ))
-      }
-
-      (( next_col +  width > column      )) && break
-      (( next_col += width, char_count++ ))
-    }
-
-    # start offset of the next line + number of chars we stepped over
-    (( CURSOR += $#RBUFFER - $#after + char_count ))
+    (( line_col +  width > cursor_pos  )) && break
+    (( line_col += width, char_count++ ))
   }
+
+  # ————————————————————————————————————————————————————————————————————————— #
+
+  # start offset of the previous/next line + number of chars we stepped over
+  if [[ $move == up ]] { (( CURSOR  = $#before  - $#line  + char_count )) } \
+  else                 { (( CURSOR += $#RBUFFER - $#after + char_count )) }
 
   # ————————————————————————————————————————————————————————————————————————— #
 
