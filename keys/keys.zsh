@@ -17,6 +17,8 @@ bindkey '^[[6~'   history-beginning-search-forward   # ⇟
 
 # —— Left/Right Navigation —————————————————————————————————————————————————— #
 
+# I don't know what these two are used for,
+#  since `⌥ ←` and `⌥ →` are bound to `^[b` and `^[f`, respectively
 bindkey '^[[1;5C'  forward-word
 bindkey '^[[1;5D' backward-word
 

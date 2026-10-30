@@ -95,6 +95,27 @@ function zle-line-up zle-line-down () {
 }
 
 # ——————————————————————————————————————————————————————————————————————————— #
+# ——————————————————————————————————————————————————————————————————————————— #
+
+function zle-first-non-blank () {
+  local -r l_line="${LBUFFER##*$'\n'}"
+
+  if [[ -n "$l_line" && "${l_line//[[:space:]]}" == '' ]] {
+    zle beginning-of-line
+  } else {
+    zle vi-first-non-blank
+  }
+}
+
+# ——————————————————————————————————————————————————————————————————————————— #
+
+zle -N       zle-first-non-blank
+
+bindkey '^A' zle-first-non-blank  # ⌘ →
+bindkey '^E' vi-end-of-line       # ⌘ ←
+
+# ——————————————————————————————————————————————————————————————————————————— #
+# ——————————————————————————————————————————————————————————————————————————— #
 
 autoload -Uz {up,down}-line-or-beginning-search
 
