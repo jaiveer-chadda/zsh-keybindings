@@ -34,6 +34,15 @@ zle -N zle-end-of-line   ; bindkey '^E' zle-end-of-line    # ⌘ →
 
 # ——————————————————————————————————————————————————————————————————————————— #
 
+function zle-backward-word () { zle backward-word; __ZLE_CURSOR_VISPOS=-1; }
+function zle-forward-word  () { zle  forward-word; __ZLE_CURSOR_VISPOS=-1; }
+
+zle -N zle-backward-word ; bindkey '^[b' zle-backward-word # ⌥ ←
+zle -N zle-forward-word  ; bindkey '^[f' zle-forward-word  # ⌥ →
+
+# ——————————————————————————————————————————————————————————————————————————— #
+# ——————————————————————————————————————————————————————————————————————————— #
+
 bindkey '^[[5~' history-beginning-search-backward  # ⇞
 bindkey '^[[6~' history-beginning-search-forward   # ⇟
 

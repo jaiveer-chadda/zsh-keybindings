@@ -8,9 +8,9 @@ function _mk_region_func() {
   # if `$6` is set,   substitute  `$5`   /  `$6`   for the left / right keys
   local -r LKey="$5${${6:-D}/#%$6}" RKey="${6:-${5}C}"
 
-  local setup=
-  [[ "$type" == cancel ]] && setup='REGION_ACTIVE=0' \
-    || setup='if ! (( REGION_ACTIVE )) { zle set-mark-command; }'
+  local setup='__ZLE_CURSOR_VISPOS=-1; '
+  if [[ "$type" == cancel ]] { setup+='REGION_ACTIVE=0'
+  } else { setup+='if ! (( REGION_ACTIVE )) { zle set-mark-command; }'; }
 
   eval "function -- '$type-$scope-left'  () { $setup; zle '$LFunc-$scope'; }"
   eval "function -- '$type-$scope-right' () { $setup; zle '$RFunc-$scope'; }"
