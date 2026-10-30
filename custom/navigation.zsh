@@ -34,13 +34,14 @@ function zle-line-up zle-line-down () {
   local char
   local -i 10 cursor_pos char_count
 
-  # visual column of the cursor (a tab advances to the next tab stop)
+  # find the visual column of the cursor
   # note: this expansion has to be left unquoted - it doesn't work otherwise
   for char in ${(s::)cur_line}; {
+    # if we're parsing a tab, align the cursor to the next tabstop
     if [[ $char == $HT ]] {
       (( cursor_pos += TABSIZE - ( cursor_pos % TABSIZE ) ))
 
-    } else {
+    } else { # otherwise just move the cursor forward one space
       (( cursor_pos++ ))
     }
   }
@@ -50,27 +51,32 @@ function zle-line-up zle-line-down () {
   local -r before="${LBUFFER%$NL*}"  # everything before the current line
   local -r  after="${RBUFFER#*$NL}"  # everything after the current line
 
-  local -i 10 width line_col
+  # `$line_pos` is the visual position of the cursor after its movement
+  local -i 10 width line_pos
   local line=
 
+  # find the `$line` that we'll be looking through - either the prev/next line
   if [[ $move == up ]] { line="${before##*$NL}" } \
   else                 { line="${after%%$NL*}"  }
 
-  # walk the previous/next line until we reach the cursor (or run out of line)
+  # walk the previous/next line until we reach the position that the cursor
+  #  should be at, were it to move up/down a line
   for char in ${(s::)line}; {
-    if [[ $char == $HT ]] {
-      (( width = TABSIZE - line_col % TABSIZE ))
-    } else {
+
+    if [[ $char == $HT ]] { # if parsing a tab, align to the next tabstop
+      (( width = TABSIZE - ( line_pos % TABSIZE ) ))
+    } else { # otherwise just move the cursor forward one space
       (( width = 1 ))
     }
 
-    (( line_col +  width > cursor_pos  )) && break
-    (( line_col += width, char_count++ ))
+    # if we've gone past the end of the line, then place the cursor at the end
+    (( line_pos +  width > cursor_pos  )) && break
+    (( line_pos += width, char_count++ ))
   }
 
   # ————————————————————————————————————————————————————————————————————————— #
 
-  # start offset of the previous/next line + number of chars we stepped over
+  # where the previous/next line starts + the number of chars before the cursor
   if [[ $move == up ]] { (( CURSOR  = $#before  - $#line  + char_count )) } \
   else                 { (( CURSOR += $#RBUFFER - $#after + char_count )) }
 
