@@ -1,5 +1,12 @@
 #!/usr/bin/env zsh
 
+# ——————————————————————————————————————————————————————————————————————————— #
+
+# The cursor's visual position on the line. Set to -1 when undefined
+export -i 10 __ZLE_CURSOR_VISPOS=-1
+
+# ——————————————————————————————————————————————————————————————————————————— #
+
 function zle-line-up zle-line-down () {
 
   local -r NL=$'\n' HT=$'\t'
@@ -10,18 +17,25 @@ function zle-line-up zle-line-down () {
 
   # ————————————————————————————————————————————————————————————————————————— #
 
+  local -i 2 did_hist_search=0
+
   # if we're moving upwards
   if [[ $move == 'up' ]] {
     # and we're on the first line
     if [[ $LBUFFER != *$NL* ]] {
       # then perform the default behaviour for the up arrow
       zle up-line-or-beginning-search
-      return
+      did_hist_search=1
     }
 
   # if we're moving downwards, and we're on the last line
   } elif [[ $RBUFFER != *$NL* ]] {
     zle down-line-or-beginning-search # run the function for the down arrow
+    did_hist_search=1
+  }
+
+  if (( did_hist_search )) {
+    __ZLE_CURSOR_VISPOS=-1
     return
   }
 
@@ -34,16 +48,21 @@ function zle-line-up zle-line-down () {
   local char
   local -i 10 cursor_pos char_count
 
-  # find the visual column of the cursor
-  # note: this expansion has to be left unquoted - it doesn't work otherwise
-  for char in ${(s::)cur_line}; {
-    # if we're parsing a tab, align the cursor to the next tabstop
-    if [[ $char == $HT ]] {
-      (( cursor_pos += TABSIZE - ( cursor_pos % TABSIZE ) ))
+  # if the visual position is undefined (usually after there's been)
+  if (( __ZLE_CURSOR_VISPOS == -1 )) {
+    # find the visual column of the cursor
+    # note: this expansion has to be left unquoted - it doesn't work otherwise
+    for char in ${(s::)cur_line}; {
+      # if we're parsing a tab, align the cursor to the next tabstop
+      if [[ $char == $HT ]] {
+        (( cursor_pos += TABSIZE - ( cursor_pos % TABSIZE ) ))
 
-    } else { # otherwise just move the cursor forward one space
-      (( cursor_pos++ ))
+      } else { # otherwise just move the cursor forward one space
+        (( cursor_pos++ ))
+      }
     }
+  } else {
+    cursor_pos=$__ZLE_CURSOR_VISPOS
   }
 
   # ————————————————————————————————————————————————————————————————————————— #
@@ -82,8 +101,28 @@ function zle-line-up zle-line-down () {
 
   # ————————————————————————————————————————————————————————————————————————— #
 
+  __ZLE_CURSOR_VISPOS=$cursor_pos
+
   return 0
 }
+
+# ——————————————————————————————————————————————————————————————————————————— #
+# ——————————————————————————————————————————————————————————————————————————— #
+
+function zle-char-left  () { (( CURSOR--, __ZLE_CURSOR_VISPOS=-1 )); }
+function zle-char-right () { (( CURSOR++, __ZLE_CURSOR_VISPOS=-1 )); }
+
+# ——————————————————————————————————————————————————————————————————————————— #
+
+autoload -Uz \
+  {up,down}-line-or-beginning-search
+zle -N   up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+
+zle -N zle-line-up   ; bindkey '^[[A' zle-line-up     # ↑
+zle -N zle-line-down ; bindkey '^[[B' zle-line-down   # ↓
+zle -N zle-char-right; bindkey '^[[C' zle-char-right  # →
+zle -N zle-char-left ; bindkey '^[[D' zle-char-left   # ←
 
 # ——————————————————————————————————————————————————————————————————————————— #
 # ——————————————————————————————————————————————————————————————————————————— #
@@ -104,16 +143,5 @@ zle -N       zle-first-non-blank
 
 bindkey '^A' zle-first-non-blank  # ⌘ →
 bindkey '^E' vi-end-of-line       # ⌘ ←
-
-# ——————————————————————————————————————————————————————————————————————————— #
-# ——————————————————————————————————————————————————————————————————————————— #
-
-autoload -Uz {up,down}-line-or-beginning-search
-
-zle -N              up-line-or-beginning-search
-zle -N            down-line-or-beginning-search
-
-zle -N zle-line-up  ; bindkey '^[[A' zle-line-up    # ↑
-zle -N zle-line-down; bindkey '^[[B' zle-line-down  # ↓
 
 # ——————————————————————————————————————————————————————————————————————————— #
