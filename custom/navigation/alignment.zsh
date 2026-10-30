@@ -2,7 +2,7 @@
 
 # ——————————————————————————————————————————————————————————————————————————— #
 
-# The cursor's visual position on the line. Set to -1 when undefined
+# The cursor's visual position on the line. Set to -1 when undefined.
 export -i 10 __ZLE_CURSOR_VISPOS=-1
 
 # ——————————————————————————————————————————————————————————————————————————— #
@@ -22,19 +22,15 @@ function zle-line-up zle-line-down () {
   # if we're moving upwards
   if [[ $move == 'up' ]] {
     # and we're on the first line
-    if [[ $LBUFFER != *$NL* ]] {
-      # then perform the default behaviour for the up arrow
-      zle up-line-or-beginning-search
-      did_hist_search=1
-    }
+    #  perform the default behaviour for the 'up arrow'
+    if [[ $LBUFFER != *$NL* ]] did_hist_search=1
 
   # if we're moving downwards, and we're on the last line
-  } elif [[ $RBUFFER != *$NL* ]] {
-    zle down-line-or-beginning-search # run the function for the down arrow
-    did_hist_search=1
-  }
+  #  perform the default 'down arrow' behaviour
+  } elif [[ $RBUFFER != *$NL* ]] { did_hist_search=1 }
 
   if (( did_hist_search )) {
+    zle $move-line-or-beginning-search
     __ZLE_CURSOR_VISPOS=-1
     return
   }
@@ -48,7 +44,8 @@ function zle-line-up zle-line-down () {
   local char
   local -i 10 cursor_pos char_count
 
-  # if the visual position is undefined (usually after there's been)
+  # if the visual position is undefined (usually after there's been a
+  #  left/right movement), then recalculate the cursor's visual position
   if (( __ZLE_CURSOR_VISPOS == -1 )) {
     # find the visual column of the cursor
     # note: this expansion has to be left unquoted - it doesn't work otherwise
@@ -61,6 +58,7 @@ function zle-line-up zle-line-down () {
         (( cursor_pos++ ))
       }
     }
+    __ZLE_CURSOR_VISPOS=$cursor_pos
   } else {
     cursor_pos=$__ZLE_CURSOR_VISPOS
   }
@@ -101,8 +99,6 @@ function zle-line-up zle-line-down () {
 
   # ————————————————————————————————————————————————————————————————————————— #
 
-  __ZLE_CURSOR_VISPOS=$cursor_pos
-
   return 0
 }
 
@@ -123,25 +119,5 @@ zle -N zle-line-up   ; bindkey '^[[A' zle-line-up     # ↑
 zle -N zle-line-down ; bindkey '^[[B' zle-line-down   # ↓
 zle -N zle-char-right; bindkey '^[[C' zle-char-right  # →
 zle -N zle-char-left ; bindkey '^[[D' zle-char-left   # ←
-
-# ——————————————————————————————————————————————————————————————————————————— #
-# ——————————————————————————————————————————————————————————————————————————— #
-
-function zle-first-non-blank () {
-  local -r l_line="${LBUFFER##*$'\n'}"
-
-  if [[ -n "$l_line" && "${l_line//[[:space:]]}" == '' ]] {
-    zle beginning-of-line
-  } else {
-    zle vi-first-non-blank
-  }
-}
-
-# ——————————————————————————————————————————————————————————————————————————— #
-
-zle -N       zle-first-non-blank
-
-bindkey '^A' zle-first-non-blank  # ⌘ →
-bindkey '^E' vi-end-of-line       # ⌘ ←
 
 # ——————————————————————————————————————————————————————————————————————————— #

@@ -5,27 +5,14 @@
 bindkey -R '!-~'  self-insert
 bindkey    ' '    magic-space
 
-# —— Up/Down Navigation ————————————————————————————————————————————————————— #
-
-# note: these functions are secondary - the main funcs are in `navigation.zsh`
-
-bindkey '^[OA'      up-line-or-history               # ⎋ O ↑
-bindkey '^[OB'    down-line-or-history               # ⎋ O ↓
-
-bindkey '^[[5~'   history-beginning-search-backward  # ⇞
-bindkey '^[[6~'   history-beginning-search-forward   # ⇟
-
-# —— Left/Right Navigation —————————————————————————————————————————————————— #
-
-# I don't know what these two are used for,
-#  since `⌥ ←` and `⌥ →` are bound to `^[b` and `^[f`, respectively
-bindkey '^[[1;5C'  forward-word
-bindkey '^[[1;5D' backward-word
-
 # —— Editing ———————————————————————————————————————————————————————————————— #
 
-bindkey '^X^O'    overwrite-mode    # mapped to `⌥ o`
 bindkey '^@'      set-mark-command  # mapped to `⌃ ⇥`
+bindkey '^X^O'    overwrite-mode    # mapped to `⌥ o`
+
+bindkey '^X^A'    _expand_alias
+bindkey '^X^X'    _expand_alias
+
 bindkey '^[m'     copy-prev-shell-word
 
 # —— Deleting ——————————————————————————————————————————————————————————————— #
@@ -49,24 +36,12 @@ bindkey '^[[Z'    reverse-menu-complete
 
 # —— Macros ————————————————————————————————————————————————————————————————— #
 
-zle -N r
-bindkey -s '^[r'  '^Qr^J'
+zle -N r      ; bindkey -s '^[r' '^Qr^J'
+zle -N lsjv   ; bindkey -s '^[l' '^Qcl^J'
+zle -N keys   ; bindkey -s '^[k' '^Qkeys | less^J'
+zle -N clr_ln ; bindkey -s '^[e' '^Qe^J'
 
-zle -N lsjv
-bindkey -s '^[l'  '^Qcl^J'
-
-zle -N keys
-bindkey -s '^[k'  '^Qkeys | less^J'
-
-zle -N clr_ln
-bindkey -s '^[e'  '^Qe^J'
-
-# —— Other —————————————————————————————————————————————————————————————————— #
-
-bindkey '^X^A'    _expand_alias
-bindkey '^X^X'    _expand_alias
-
-# ——————————————————————————————————————————————————————————————————————————— #
+# —— Source Custom Files ———————————————————————————————————————————————————— #
 
 () { local f; for f in "${${(%):-%x}:a:h:h}/custom/"**/*.zsh; source "$f"; }
 
