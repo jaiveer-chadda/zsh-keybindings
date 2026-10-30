@@ -3,7 +3,7 @@
 # ——————————————————————————————————————————————————————————————————————————— #
 
 # Make the `⌘ ←` command behave more like it does in VS Code.
-function zle-first-non-blank () {
+function zle-start-of-line () {
   local -r l_line="${LBUFFER##*$'\n'}" # the line to the left of the cursor
 
   # if the line has some characters before it, but not exclusively spaces
@@ -14,16 +14,23 @@ function zle-first-non-blank () {
     # otherwise, go to the first non-space character in the line
     zle vi-first-non-blank
   }
+
+  __ZLE_CURSOR_VISPOS=-1
+}
+
+# ——————————————————————————————————————————————————— #
+
+function zle-end-of-line () {
+  # `vi-end-of-line` ensures that pressing `⌘ →` at the end of a line won't
+  #  make the cursor go to the next line
+  zle vi-end-of-line
+  __ZLE_CURSOR_VISPOS=-1
 }
 
 # ——————————————————————————————————————————————————————————————————————————— #
 
-zle -N       zle-first-non-blank
-
-bindkey '^A' zle-first-non-blank  # ⌘ ←
-bindkey '^E' vi-end-of-line       # ⌘ →
-# `vi-end-of-line` ensures that pressing `⌘ →` at the end of a line won't make
-#  you go to the next line
+zle -N zle-start-of-line ; bindkey '^A' zle-start-of-line  # ⌘ ←
+zle -N zle-end-of-line   ; bindkey '^E' zle-end-of-line    # ⌘ →
 
 # ——————————————————————————————————————————————————————————————————————————— #
 

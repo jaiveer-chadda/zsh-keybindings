@@ -2,11 +2,6 @@
 
 # ——————————————————————————————————————————————————————————————————————————— #
 
-# The cursor's visual position on the line. Set to -1 when undefined.
-export -i 10 __ZLE_CURSOR_VISPOS=-1
-
-# ——————————————————————————————————————————————————————————————————————————— #
-
 function zle-line-up zle-line-down () {
 
   local -r NL=$'\n' HT=$'\t'
