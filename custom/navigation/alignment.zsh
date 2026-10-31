@@ -10,21 +10,17 @@ function zle-line-up zle-line-down () {
   # get the last word of the function name
   local -r move="${${(%):-%N}##*-}"
 
+  local -i 2 move_up=0 move_down=1
+  if [[ $move == 'up' ]] { move_up=1 move_down=0 }
+
   # ————————————————————————————————————————————————————————————————————————— #
 
-  local -i 2 did_hist_search=0
+  local -i 2 on_first_line=0; if [[ $LBUFFER != *$NL* ]] on_first_line=1
+  local -i 2 on_final_line=0; if [[ $RBUFFER != *$NL* ]] on_final_line=1
 
-  # if we're moving upwards
-  if [[ $move == 'up' ]] {
-    # and we're on the first line
-    #  perform the default behaviour for the 'up arrow'
-    if [[ $LBUFFER != *$NL* ]] did_hist_search=1
-
-  # if we're moving downwards, and we're on the last line
-  #  perform the default 'down arrow' behaviour
-  } elif [[ $RBUFFER != *$NL* ]] { did_hist_search=1 }
-
-  if (( did_hist_search )) {
+  # if moving up and on the first line, or moving down and on the last line
+  #  perform the default behaviour for the 'up' or 'down' arrows, respectively
+  if (( move_up ? on_first_line : on_final_line )) {
     zle $move-line-or-beginning-search
     __ZLE_CURSOR_VISPOS=-1
     return
@@ -68,8 +64,8 @@ function zle-line-up zle-line-down () {
   local line=
 
   # find the `$line` that we'll be looking through - either the prev/next line
-  if [[ $move == up ]] { line="${before##*$NL}" } \
-  else                 { line="${after%%$NL*}"  }
+  if (( move_up )) { line="${before##*$NL}" } \
+  else             { line="${after%%$NL*}"  }
 
   # walk the previous/next line until we reach the position that the cursor
   #  should be at, were it to move up/down a line
@@ -89,8 +85,8 @@ function zle-line-up zle-line-down () {
   # ————————————————————————————————————————————————————————————————————————— #
 
   # where the previous/next line starts + the number of chars before the cursor
-  if [[ $move == up ]] { (( CURSOR  = $#before  - $#line  + char_count )) } \
-  else                 { (( CURSOR += $#RBUFFER - $#after + char_count )) }
+  if (( move_up )) { (( CURSOR  = $#before  - $#line  + char_count )) } \
+  else             { (( CURSOR += $#RBUFFER - $#after + char_count )) }
 
   # ————————————————————————————————————————————————————————————————————————— #
 
