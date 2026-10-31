@@ -30,9 +30,11 @@ bindkey '^[^U'    kill-whole-line     # mapped to `⌘ ⌥ ⌫`
 bindkey '^_'      undo  # mapped to `⌘   Z`
 bindkey '^[[^_'   redo  # mapped to `⌘ ⇧ Z`
 
-# —— Completion ————————————————————————————————————————————————————————————— #
+# —— Tab / Completion ——————————————————————————————————————————————————————— #
 
-bindkey '^[[Z'    reverse-menu-complete
+bindkey '^I'      complete-word          # mapped to   `⇥`
+bindkey '^[^I'    self-insert-unmeta     # mapped to `⇧ ⇥`
+bindkey '^[[Z'    reverse-menu-complete  # mapped to `⌃ ⇥`
 
 # —— Macros ————————————————————————————————————————————————————————————————— #
 
