@@ -33,11 +33,18 @@ function zle-line-up zle-line-down () {
   # ————————————————————————————————————————————————————————————————————————— #
 
   local char
-  local -i 10 cursor_pos char_count
+  local -i 10 cursor_pos
 
   # if the visual position is undefined (usually after there's been a
   #  left/right movement), then recalculate the cursor's visual position
   if (( __ZLE_CURSOR_VISPOS == -1 )) {
+    # if we're on the first line,
+    #  factor the prompt's length into the cursor's visual position
+    if (( on_first_line )) {
+      # `//$'\e['*m` removes the CSI/ANSI graphical escapes
+      # `//$'\e]'*$'\a'` removes the OSC escapes added by `iterm2_precmd`
+      cursor_pos="${(S)#${(S)${(%)PS1}//$'\e['*m}//$'\e]'*$'\a'}"
+    }
     # find the visual column of the cursor
     # note: this expansion has to be left unquoted - it doesn't work otherwise
     for char in ${(s::)cur_line}; {
@@ -60,12 +67,20 @@ function zle-line-up zle-line-down () {
   local -r  after="${RBUFFER#*$NL}"  # everything after the current line
 
   # `$line_pos` is the visual position of the cursor after its movement
-  local -i 10 width line_pos
+  local -i 10 width line_pos char_count
   local line=
 
-  # find the `$line` that we'll be looking through - either the prev/next line
-  if (( move_up )) { line="${before##*$NL}" } \
-  else             { line="${after%%$NL*}"  }
+  # find the `$line` that we'll be looking through
+  if (( move_down )) {
+    line="${after%%$NL*}"   # look through the next line
+  } else {
+    line="${before##*$NL}"  # look through the previous line
+
+    if [[ $before != *$NL* ]] { # if we're moving upwards onto the first line
+      # factor the prompt's width into finding the target visual position
+      line_pos="${(S)#${(S)${(%)PS1}//$'\e['*m}//$'\e]'*$'\a'}"
+    }
+  }
 
   # walk the previous/next line until we reach the position that the cursor
   #  should be at, were it to move up/down a line
