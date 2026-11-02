@@ -21,4 +21,4 @@ function count() {
 }
 
 zle -N count
-# bindkey '' count
+# keybind '' count

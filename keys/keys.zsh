@@ -1,52 +1,52 @@
 #!/usr/bin/env zsh
 
+source "${${(%):-%x}:a:h}/keybind.zsh"
+
 # —— Meta ——————————————————————————————————————————————————————————————————— #
 
-bindkey -R '!-~'  self-insert
-bindkey    ' '    magic-space
+keybind -R '!-~'      self-insert
+keybind    ' '        magic-space
 
 # —— Editing ———————————————————————————————————————————————————————————————— #
 
-bindkey '^@'      set-mark-command  # mapped to `⌃ ⇥`
-bindkey '^X^O'    overwrite-mode    # mapped to `⌥ o`
+keybind    '^@'       set-mark-command         ⌃ ⇥
+keybind    '^X^O'     overwrite-mode           ⌥ o
 
-bindkey '^X^A'    _expand_alias
-bindkey '^X^X'    _expand_alias
+keybind    '^X^A'     _expand_alias
+keybind    '^X^X'     _expand_alias
 
-bindkey '^[m'     copy-prev-shell-word
+keybind    '^[m'      copy-prev-shell-word
 
 # —— Deleting ——————————————————————————————————————————————————————————————— #
 
-bindkey '^[[3;5~' kill-word
+keybind    '^[[3;5~'  kill-word
 
-bindkey '^[w'     kill-region
-bindkey '^[^?'    kill-region
+keybind    '^[w'      kill-region
+keybind    '^[^?'     kill-region
 
-bindkey '^U'      backward-kill-line  # mapped to `⌘   ⌫`
-bindkey '^[^U'    kill-whole-line     # mapped to `⌘ ⌥ ⌫`
+keybind      '^U'     backward-kill-line       ⌘   ⌫
+keybind    '^[^U'     kill-whole-line          ⌘ ⌥ ⌫
 
 # —— Undo/Redo —————————————————————————————————————————————————————————————— #
 
-bindkey '^_'      undo  # mapped to `⌘   Z`
-bindkey '^[[^_'   redo  # mapped to `⌘ ⇧ Z`
+keybind       '^_'    undo                     ⌘   Z
+keybind    '^[[^_'    redo                     ⌘ ⇧ Z
 
 # —— Tab / Completion ——————————————————————————————————————————————————————— #
 
-bindkey '^I'      complete-word          # mapped to   `⇥`
-bindkey '^[^I'    self-insert-unmeta     # mapped to `⇧ ⇥`
-bindkey '^[[Z'    reverse-menu-complete  # mapped to `⌃ ⇥`
+keybind      '^I'     complete-word              ⇥
+keybind    '^[^I'     self-insert-unmeta       ⇧ ⇥
+keybind    '^[[Z'     reverse-menu-complete    ⌃ ⇥
 
 # —— Macros ————————————————————————————————————————————————————————————————— #
 
-zle -N r      ; bindkey -s '^[r' '^Qr^J'
-zle -N lsjv   ; bindkey -s '^[l' '^Qcl^J'
-zle -N keys   ; bindkey -s '^[k' '^Qkeys | less^J'
-zle -N clr_ln ; bindkey -s '^[e' '^Qe^J'
+keybind -s '^[r'      r
+keybind -s '^[l'      cl
+keybind -s '^[k'     'keys | less'
+keybind -s '^[e'      e
 
 # —— Source Custom Files ———————————————————————————————————————————————————— #
 
 () { local f; for f in "${${(%):-%x}:a:h:h}/custom/"**/*.zsh; source "$f"; }
 
 # ——————————————————————————————————————————————————————————————————————————— #
-
-# spell:ignoreRegExp /[^][A-Z]\w+/g

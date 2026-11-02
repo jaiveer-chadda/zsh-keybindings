@@ -62,9 +62,9 @@ function copy-current-line () {
 
 # ——————————————————————————————————————————————————————————————————————————— #
 
-bindkey '^[c'   copy-last-cmd     ; zle -N copy-last-cmd
-bindkey '^[C'   copy-current-line ; zle -N copy-current-line
-bindkey '^[^[C' copy-current-line
+keybind '^[c'   copy-last-cmd
+keybind '^[C'   copy-current-line
+keybind '^[^[C' copy-current-line
 
 # ——————————————————————————————————————————————————————————————————————————— #
 

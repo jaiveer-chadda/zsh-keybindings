@@ -12,8 +12,7 @@ function copy-region () {
   REGION_ACTIVE=0
 }
 
-zle -N          copy-region
-bindkey '^[].c' copy-region  # ⌘ ⌥ C
+keybind '^[].c' copy-region  ⌘ ⌥ C
 
 # —— Cut Region ————————————————————————————————————————————————————————————— #
 
@@ -28,8 +27,7 @@ function cut-region () {
   REGION_ACTIVE=0
 }
 
-zle -N          cut-region
-bindkey '^[].x' cut-region  # ⌘ X
+keybind '^[].x' cut-region  ⌘ X
 
 # —— Delete Region —————————————————————————————————————————————————————————— #
 
@@ -43,8 +41,7 @@ function delete-region-or-char () {
   }
 }
 
-zle -N       delete-region-or-char
-bindkey '^?' delete-region-or-char  # ⌫
+keybind '^?' delete-region-or-char  ⌫
 
 # —— Quote Region ——————————————————————————————————————————————————————————— #
 
@@ -84,7 +81,7 @@ zle -N surround-region-or-insert
 function -- () {
   local char
   for char in "${(@s::):-"\"'()[]{}<>"}"; {
-    bindkey -- "$char" surround-region-or-insert
+    keybind -- "$char" surround-region-or-insert "$char"
   }
 }
 

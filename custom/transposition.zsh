@@ -83,9 +83,9 @@ function  transp-chrs  transp-chrs-left  transp-chrs-right  () {
 
 # ——————————————————————————————————————————————————————————————————————————— #
 
-zle -N transp-chrs       ; bindkey '^T'       transp-chrs
-zle -N transp-chrs-left  ; bindkey '^[[(A+q)' transp-chrs-left   # ⌥ q
-zle -N transp-chrs-right ; bindkey '^[[(A+w)' transp-chrs-right  # ⌥ w
+keybind '^T'       transp-chrs
+keybind '^[[(A+q)' transp-chrs-left   ⌥ q
+keybind '^[[(A+w)' transp-chrs-right  ⌥ w
 
 # ——————————————————————————————————————————————————————————————————————————— #
 

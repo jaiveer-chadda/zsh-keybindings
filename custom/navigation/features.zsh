@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 
 # ——————————————————————————————————————————————————————————————————————————— #
+# —— zle-start-of-line () ——————————————————————————————————————————————————— #
 
 # Make the `⌘ ←` command behave more like it does in VS Code.
 function zle-start-of-line () {
@@ -18,7 +19,7 @@ function zle-start-of-line () {
   __ZLE_CURSOR_VISPOS=-1
 }
 
-# ——————————————————————————————————————————————————— #
+# —— zle-end-of-line () ————————————————————————————— #
 
 function zle-end-of-line () {
   # `vi-end-of-line` ensures that pressing `⌘ →` at the end of a line won't
@@ -27,23 +28,27 @@ function zle-end-of-line () {
   __ZLE_CURSOR_VISPOS=-1
 }
 
-# ——————————————————————————————————————————————————————————————————————————— #
-
-zle -N zle-start-of-line ; bindkey '^A' zle-start-of-line  # ⌘ ←
-zle -N zle-end-of-line   ; bindkey '^E' zle-end-of-line    # ⌘ →
-
-# ——————————————————————————————————————————————————————————————————————————— #
+# —— zle-(back|for)ward-word () ————————————————————————————————————————————— #
 
 function zle-backward-word () { zle backward-word; __ZLE_CURSOR_VISPOS=-1; }
 function zle-forward-word  () { zle  forward-word; __ZLE_CURSOR_VISPOS=-1; }
 
-zle -N zle-backward-word ; bindkey '^[b' zle-backward-word # ⌥ ←
-zle -N zle-forward-word  ; bindkey '^[f' zle-forward-word  # ⌥ →
-
 # ——————————————————————————————————————————————————————————————————————————— #
 # ——————————————————————————————————————————————————————————————————————————— #
 
-bindkey '^[[5~' history-beginning-search-backward  # ⇞
-bindkey '^[[6~' history-beginning-search-forward   # ⇟
+# —— ⌘ ←/→ —————————————————————————————————————————————————————————————————— #
+
+keybind '^A'    zle-start-of-line                  ⌘ ←
+keybind '^E'    zle-end-of-line                    ⌘ →
+
+# —— ⌥ ←/→ —————————————————————————————————————————————————————————————————— #
+
+keybind '^[b'   zle-backward-word                  ⌥ ←
+keybind '^[f'   zle-forward-word                   ⌥ →
+
+# —— ⇞/⇟ ( ◍↑/◍↓ )——————————————————————————————————————————————————————————— #
+
+keybind '^[[5~' history-beginning-search-backward  ⇞
+keybind '^[[6~' history-beginning-search-forward   ⇟
 
 # ——————————————————————————————————————————————————————————————————————————— #

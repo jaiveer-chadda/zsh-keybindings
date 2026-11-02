@@ -7,5 +7,4 @@ function toggle-overwrite () {
     { echo -n $'\e[5 q'; }
 }
 
-zle -N         toggle-overwrite
-bindkey '^X^O' toggle-overwrite  # ⌥ O
+keybind '^X^O' toggle-overwrite  ⌥ O

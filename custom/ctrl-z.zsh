@@ -5,5 +5,4 @@ function ctrl-z () {
   elif (( $#BUFFER    )) {              zle push-input ; }
 }
 
-zle -N       ctrl-z
-bindkey '^Z' ctrl-z
+keybind '^Z' ctrl-z

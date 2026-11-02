@@ -15,5 +15,4 @@ function debug zle-debug () {
   zle -M "${msg%$NL}"
 }
 
-zle -N               zle-debug
-bindkey '^X^[[47;5u' zle-debug  # ⌃X ⌃/
+keybind '^X^[[47;5u' zle-debug  '⌃ x + ⌃ /'

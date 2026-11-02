@@ -9,6 +9,5 @@ function surround-with-set-x () {
   CURSOR+=${#:-'set -x; '}
 }
 
-zle -N          surround-with-set-x
-bindkey '^[S'   surround-with-set-x
-bindkey '^[^[s' surround-with-set-x
+keybind '^[S'   surround-with-set-x
+keybind '^[^[s' surround-with-set-x

@@ -27,5 +27,4 @@ function zle-run-wh () {
   zle accept-line
 }
 
-zle -N        zle-run-wh
-bindkey '^[w' zle-run-wh
+keybind '^[w' zle-run-wh

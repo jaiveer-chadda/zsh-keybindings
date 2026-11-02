@@ -34,5 +34,4 @@ function zle-run-man () {
   zle accept-line
 }
 
-zle -N        zle-run-man
-bindkey '^[h' zle-run-man
+keybind '^[h' zle-run-man
