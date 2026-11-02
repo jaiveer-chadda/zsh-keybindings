@@ -11,7 +11,7 @@ function  transp-chrs  transp-chrs-left  transp-chrs-right  () {
 
   # —— Setup ——————————————————————————————————————————————————————————————— #
 
-  setopt local_options warn_create_global warn_nested_var
+  setopt local_options warn_nested_var
 
   # —— Define/Declare Vars ———————————————————— #
 
