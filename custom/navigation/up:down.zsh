@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 
+# ——————————————————————————————————————————————————————————————————————————— #
+
 autoload -Uz {up,down}-line-or-beginning-search
 zle -N   up-line-or-beginning-search
 zle -N down-line-or-beginning-search
@@ -113,16 +115,8 @@ function zle-line-up zle-line-down () {
 }
 
 # ——————————————————————————————————————————————————————————————————————————— #
-# ——————————————————————————————————————————————————————————————————————————— #
-
-function zle-char-left  () { (( CURSOR-- )); export __ZLE_CURSOR_VISPOS=-1; }
-function zle-char-right () { (( CURSOR++ )); export __ZLE_CURSOR_VISPOS=-1; }
-
-# ——————————————————————————————————————————————————————————————————————————— #
 
 keybind '^[[A' zle-line-up     ↑
 keybind '^[[B' zle-line-down   ↓
-keybind '^[[C' zle-char-right  →
-keybind '^[[D' zle-char-left   ←
 
 # ——————————————————————————————————————————————————————————————————————————— #
