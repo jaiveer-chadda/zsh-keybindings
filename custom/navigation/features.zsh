@@ -16,7 +16,7 @@ function zle-start-of-line () {
     zle vi-first-non-blank
   }
 
-  __ZLE_CURSOR_VISPOS=-1
+  export __ZLE_CURSOR_VISPOS=-1
 }
 
 # —— zle-end-of-line () ————————————————————————————— #
@@ -25,13 +25,13 @@ function zle-end-of-line () {
   # `vi-end-of-line` ensures that pressing `⌘ →` at the end of a line won't
   #  make the cursor go to the next line
   zle vi-end-of-line
-  __ZLE_CURSOR_VISPOS=-1
+  export __ZLE_CURSOR_VISPOS=-1
 }
 
 # —— zle-(back|for)ward-word () ————————————————————————————————————————————— #
 
-function zle-backward-word () { zle backward-word; __ZLE_CURSOR_VISPOS=-1; }
-function zle-forward-word  () { zle  forward-word; __ZLE_CURSOR_VISPOS=-1; }
+function zle-backward-word { zle backward-word; export __ZLE_CURSOR_VISPOS=-1 }
+function zle-forward-word  { zle  forward-word; export __ZLE_CURSOR_VISPOS=-1 }
 
 # ——————————————————————————————————————————————————————————————————————————— #
 # ——————————————————————————————————————————————————————————————————————————— #

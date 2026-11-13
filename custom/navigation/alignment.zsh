@@ -26,7 +26,7 @@ function zle-line-up zle-line-down () {
   #  perform the default behaviour for the 'up' or 'down' arrows, respectively
   if (( move_up ? on_first_line : on_final_line )) {
     zle $move-line-or-beginning-search
-    __ZLE_CURSOR_VISPOS=-1
+    export __ZLE_CURSOR_VISPOS=-1
     return
   }
 
@@ -60,7 +60,7 @@ function zle-line-up zle-line-down () {
         (( cursor_pos++ ))
       }
     }
-    __ZLE_CURSOR_VISPOS=$cursor_pos
+    export __ZLE_CURSOR_VISPOS=$cursor_pos
   } else {
     cursor_pos=$__ZLE_CURSOR_VISPOS
   }
@@ -115,8 +115,8 @@ function zle-line-up zle-line-down () {
 # ——————————————————————————————————————————————————————————————————————————— #
 # ——————————————————————————————————————————————————————————————————————————— #
 
-function zle-char-left  () { (( CURSOR--, __ZLE_CURSOR_VISPOS=-1 )); }
-function zle-char-right () { (( CURSOR++, __ZLE_CURSOR_VISPOS=-1 )); }
+function zle-char-left  () { (( CURSOR-- )); export __ZLE_CURSOR_VISPOS=-1; }
+function zle-char-right () { (( CURSOR++ )); export __ZLE_CURSOR_VISPOS=-1; }
 
 # ——————————————————————————————————————————————————————————————————————————— #
 

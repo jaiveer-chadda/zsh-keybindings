@@ -78,7 +78,8 @@ function  transp-chrs  transp-chrs-left  transp-chrs-right  () {
 
   # —— Cleanup & Return ——————————————————————— #
 
-  (( MARK += direction, CURSOR += direction, __ZLE_CURSOR_VISPOS = -1 ))
+  (( MARK += direction, CURSOR += direction ))
+  export __ZLE_CURSOR_VISPOS=-1
 }
 
 # ——————————————————————————————————————————————————————————————————————————— #

@@ -8,7 +8,7 @@ function _mk_region_func() {
   # if `$7` is set,   substitute  `$6`   /  `$7`   for the left / right keys
   local -r LKey="$6${${7:-D}/#%$7}" RKey="${7:-${6}C}"
 
-  local setup='__ZLE_CURSOR_VISPOS=-1; '
+  local setup='export __ZLE_CURSOR_VISPOS=-1; '
   if [[ "$type" == cancel ]] { setup+='REGION_ACTIVE=0'
   } else { setup+='if ! (( REGION_ACTIVE )) { zle set-mark-command; }'; }
 
