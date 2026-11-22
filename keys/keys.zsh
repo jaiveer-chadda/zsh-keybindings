@@ -6,6 +6,7 @@ source "${${(%):-%x}:a:h}/keybind.zsh"
 
 keybind -R '!-~'      self-insert
 keybind    ' '        magic-space
+keybind    '^[[32;2u' magic-space              ⇧ ␣
 
 # —— Editing ———————————————————————————————————————————————————————————————— #
 
