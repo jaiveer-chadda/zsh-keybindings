@@ -33,11 +33,12 @@ function surround-region-or-insert () {
   BUFFER="$BUFFER[1,left]$lchr$BUFFER[left+1,right]$rchr$BUFFER[right+1,-1]"
 
   (( MARK = left + $#lchr, CURSOR = right + $#lchr ))
+  REGION_ACTIVE=0
 }
 
 zle -N surround-region-or-insert
 
-# ——————————————————————————————————————————————————————————————————————————— ## ———————————————————————————— #
+# ——————————————————————————————————————————————————————————————————————————— #
 
 function -- () {
   local char; local -r surrounding_chars="\"\`'()[]{}<>£\$”’"
@@ -47,3 +48,5 @@ function -- () {
 }
 
 # ——————————————————————————————————————————————————————————————————————————— #
+
+# spell:ignoreRegexp /\b[lr]chr\b/g
